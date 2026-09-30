@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+
+# Bases de datos de prueba generadas por scripts/
+*.sqlite-journal
+*.sqlite-wal
+bbdd.demo.sqlite

@@ -1,0 +1,253 @@
+/* MensaGes · editor AG Grid */
+
+:root {
+  --bg: #12161c;
+  --panel: #1b212b;
+  --panel-2: #232b37;
+  --line: #313c4b;
+  --text: #dde4ee;
+  --muted: #8b98ab;
+  --accent: #4aa3df;
+  --ok: #5cb85c;
+  --warn: #e0a800;
+  --danger: #d9534f;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ---------------------------------------------------------------- cabecera */
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.marca h1 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: .4px;
+}
+
+.marca h1 span { color: var(--muted); font-weight: 400; }
+
+.subtitulo {
+  color: var(--muted);
+  font-size: 12px;
+  font-family: Consolas, monospace;
+}
+
+.bloque-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bloque-selector label { color: var(--muted); font-size: 13px; }
+
+/* dcc.Dropdown en Dash 4 se renderiza con sus propias clases
+   (dash-dropdown-*), no con las de react-select. */
+.selector.dash-dropdown,
+.selector .dash-dropdown-grid-container,
+.selector .dash-dropdown-value,
+.selector .dash-dropdown-menu,
+.selector .dash-dropdown-option {
+  background: var(--panel-2);
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.selector {
+  min-width: 300px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.selector:hover { border-color: var(--accent); }
+
+.selector .dash-dropdown-value-item { color: var(--text); }
+.selector .dash-dropdown-value-placeholder { color: var(--muted); }
+
+.selector .dash-dropdown-menu {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+  z-index: 30;
+  margin-top: 4px;
+  padding: 4px;
+}
+
+.selector .dash-dropdown-option { border-radius: 3px; padding: 6px 8px; }
+.selector .dash-dropdown-option:hover { background: rgba(74, 163, 223, .2); }
+.selector .dash-dropdown-option[aria-selected="true"] {
+  background: var(--accent);
+  color: #07131d;
+}
+
+/* ------------------------------------------------------------------ cuerpo */
+
+.cuerpo { flex: 1; padding: 16px 20px; display: flex; flex-direction: column; }
+
+.barra {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.btn {
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 7px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) { border-color: var(--accent); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+
+.btn-primario { border-color: var(--accent); color: var(--accent); }
+.btn-guardar   { background: var(--accent); border-color: var(--accent); color: #07131d; font-weight: 600; }
+.btn-peligro   { border-color: var(--danger); color: var(--danger); }
+.btn-peligro:hover:not(:disabled) { background: var(--danger); color: #fff; }
+
+.filtro {
+  margin-left: auto;
+  min-width: 220px;
+}
+
+input, select, textarea {
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 6px 9px;
+  font: inherit;
+}
+
+input[type=search] {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 6px 9px;
+  color: var(--text);
+}
+
+input::placeholder { color: var(--muted); }
+
+.contador {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+/* El componente escribe height:400px en el estilo en linea de su contenedor,
+   que gana a cualquier regla normal. Por eso hace falta !important para darle
+   la altura que pide la pagina. */
+.rejilla {
+  height: calc(100vh - 340px) !important;
+  min-height: 360px !important;
+}
+
+.rejilla > div,
+.rejilla .ag-root-wrapper {
+  height: 100%;
+}
+
+/* Tema oscuro: se sobreescriben las variables CSS que usa AG Grid 33+. */
+.rejilla {
+  --ag-background-color: var(--panel);
+  --ag-foreground-color: var(--text);
+  --ag-header-background-color: var(--panel-2);
+  --ag-header-foreground-color: var(--text);
+  --ag-border-color: var(--line);
+  --ag-odd-row-background-color: rgba(255, 255, 255, .02);
+  --ag-row-hover-color: rgba(74, 163, 223, .14);
+  --ag-selected-row-background-color: rgba(74, 163, 223, .22);
+  --ag-input-focus-border-color: var(--accent);
+  --ag-range-selection-border-color: var(--accent);
+  --ag-checkbox-checked-color: var(--accent);
+  --ag-control-panel-background-color: var(--panel-2);
+  --ag-subheader-background-color: var(--panel-2);
+  --ag-accent-color: var(--accent);
+  --ag-secondary-color: var(--muted);
+  --ag-header-column-separator-color: var(--line);
+  --ag-cell-horizontal-padding: 10px;
+  --ag-font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --ag-font-size: 13px;
+}
+
+.mensaje {
+  margin-top: 10px;
+  padding: 9px 12px;
+  border-radius: 5px;
+  font-size: 13px;
+  border: 1px solid transparent;
+  display: none;
+}
+
+.mensaje.ok    { display: block; background: rgba(92,184,92,.12);  border-color: var(--ok); }
+.mensaje.error { display: block; background: rgba(217,83,79,.12); border-color: var(--danger); }
+.mensaje.info  { display: block; background: rgba(74,163,223,.12); border-color: var(--accent); }
+
+/* -------------------------------------------------------------------- pie */
+
+.pie { padding: 0 20px 20px; color: var(--muted); }
+
+.pie summary {
+  cursor: pointer;
+  padding: 8px 0;
+  font-size: 13px;
+}
+
+.esquema { max-height: 340px; overflow: auto; }
+
+.tabla-esquema { border-collapse: collapse; width: 100%; font-size: 12px; }
+
+.tabla-esquema th, .tabla-esquema td {
+  border: 1px solid var(--line);
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.tabla-esquema th { background: var(--panel-2); position: sticky; top: 0; }
+
+.etiqueta {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  border: 1px solid var(--line);
+}
+
+.etiqueta.pk { border-color: var(--warn); color: var(--warn); }
+.etiqueta.fk { border-color: var(--accent); color: var(--accent); }
+
+/* ----------------------------------------------------------- celdas AG Grid */
+
+.celda-pk {
+  font-family: Consolas, monospace;
+  color: var(--warn);
+  background: rgba(224,168,0,.07);
+}
+
+/* Fila pendiente de guardar: se marca desde la clase de la fila. */
+.ag-row.pendiente { background: rgba(74,163,223,.10); }
