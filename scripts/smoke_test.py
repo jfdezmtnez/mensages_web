@@ -83,9 +83,23 @@ class _contexto:
 def main() -> int:
     if DB.exists():
         DB.unlink()
-    import seed_demo
+    import demo_data
 
-    seed_demo.seed(DB)
+    # Base diminuta y estable: 3 clientes, 3 mensajeros y un unico albaran con
+    # una casilla del mensajero 1. Asi las comprobaciones no dependen de las
+    # cifras del ano entero que genera la demo de verdad.
+    con = demo_data.abrir(DB)
+    try:
+        demo_data.rellenar(con, clientes=3, mensajeros=3, trafico=demo_data.TRAFICO_MINIMO)
+        incoherencias = demo_data.verificar(con)
+    finally:
+        con.close()
+    if incoherencias:
+        print("El generador de datos ha producido una base incoherente:")
+        for fallo in incoherencias:
+            print("  -", fallo)
+    else:
+        print("Base de pruebas generada y coherente.")
 
     import dash
 
@@ -201,19 +215,21 @@ def main() -> int:
     check("no toca las filas", r[DATOS] is dash.no_update)
 
     print("\n== Validacion ==")
-    larga = dict(db.load_rows(DB, t)[1], nombre="x" * 200)
+    segunda = db.load_rows(DB, t)[1]
+    larga = dict(segunda, nombre="x" * 200)
     r = accion("btn-guardar", nombre="mensajero", cambios=[larga])
     check("rechaza texto demasiado largo", "80 caracteres" in r[AVISO], r[AVISO])
     check("marca el mensaje como error", r[CLASE] == "mensaje error", r[CLASE])
     check("conserva el buffer para corregir", len(r[BUFFER]) == 1)
     check("no recarga la rejilla", r[DATOS] is dash.no_update)
     check("el valor largo no se guardo",
-          q("select nombre from mensajero where codigo=2")[0][0] == "Marta Nunez")
+          q("select nombre from mensajero where codigo=2")[0][0] == segunda["nombre"])
 
-    mala = dict(db.load_rows(DB, t)[1], vehiculo="z")
+    mala = dict(segunda, vehiculo="z")
     r = accion("btn-guardar", nombre="mensajero", cambios=[mala])
     check("rechaza valor fuera del CHECK", "solo admite" in r[AVISO], r[AVISO])
-    check("no se guardo", q("select vehiculo from mensajero where codigo=2")[0][0] == "c")
+    check("no se guardo",
+          q("select vehiculo from mensajero where codigo=2")[0][0] == segunda["vehiculo"])
 
     print("\n== Descartar ==")
     total = q("select count(*) from mensajero")[0][0]
@@ -288,6 +304,12 @@ def main() -> int:
     con.close()
     check("el valor va ligado, no concatenado", malas == [])
     check("la tabla sigue existiendo", len(q("select 1 from cliente")) >= 2)
+
+    print("\n== Datos de demostracion ==")
+    check("el generador produce una base coherente", not incoherencias,
+          "; ".join(incoherencias))
+    check("hay un albaran que protege a su mensajero (FK viva)",
+          q("select count(*) from albaran_casilla")[0][0] == 1)
 
     print(f"\n{'=' * 52}\n  {ok} correctas, {fail} fallidas\n{'=' * 52}")
     return 1 if fail else 0

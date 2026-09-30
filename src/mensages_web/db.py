@@ -453,6 +453,14 @@ def translate(exc: sqlite3.Error) -> str:
             "borra o reasigna primero las filas hijas."
         )
     if "unique constraint failed" in lowered:
+        # SQLite da la lista de columnas: "UNIQUE constraint failed: cliente.telefono"
+        columnas = [c.strip() for c in text.split(":", 1)[1].split(",")] \
+            if ":" in text else []
+        if len(columnas) == 1:
+            return f"Ya existe otra fila con ese valor en «{columnas[0]}»."
+        if columnas:
+            return "Ya existe otra fila con esos mismos valores en: " + \
+                   ", ".join(f"«{c}»" for c in columnas) + "."
         return "Ya existe una fila con esa clave."
     if "datatype mismatch" in lowered or "not numeric" in lowered:
         return "Algún campo numérico no contiene un número válido."

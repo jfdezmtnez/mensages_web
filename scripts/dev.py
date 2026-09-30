@@ -27,7 +27,10 @@ def main() -> int:
     args = ap.parse_args()
 
     if args.db and not Path(args.db).is_file():
-        subprocess.run([sys.executable, str(ROOT / "scripts" / "seed_demo.py")], check=True)
+        subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "demo_data.py"), "--db", args.db],
+            check=True,
+        )
 
     liberar(args.port)
     if args.sin_arrancar:
